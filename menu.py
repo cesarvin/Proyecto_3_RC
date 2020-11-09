@@ -1,5 +1,8 @@
 import pygame, sys
 from pygame.locals import *
+from gl import *
+
+from math import cos, sin, pi
 
 mainClock = pygame.time.Clock()
 
@@ -8,6 +11,11 @@ pygame.display.set_caption('Lab 3 UI')
 screen = pygame.display.set_mode((1000,500),0,32)
 
 font = pygame.font.SysFont("Arial", 30)
+
+def updateFPS():
+    fps = str(int(clock.get_fps()))
+    fps = font.render(fps, 1, pygame.Color("white"))
+    return fps
 
 def main_menu():
     while True:

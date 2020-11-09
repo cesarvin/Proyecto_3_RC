@@ -1,0 +1,7 @@
+Ejecutar el archivo juego.py para iniciar el juego 
+
+
+utilice las teclas w,a,s,d para moverse vertical y horizontalmente
+utilice las teclas q, e para rotar la dirección
+
+utilice esc para salir al menu nuevamente y colocar pausa

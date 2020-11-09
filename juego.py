@@ -1,27 +1,97 @@
-import pygame
+import pygame, sys
+from pygame.locals import *
 from gl import *
 
 from math import cos, sin, pi
 
-pygame.init()
-screen = pygame.display.set_mode((1000,500), pygame.DOUBLEBUF | pygame.HWACCEL) 
-screen.set_alpha(None)
-clock = pygame.time.Clock()
-font = pygame.font.SysFont("Arial", 30)
+mainClock = pygame.time.Clock()
 
-def updateFPS():
-    fps = str(int(clock.get_fps()))
-    fps = font.render(fps, 1, pygame.Color("white"))
-    return fps
+clock = pygame.time.Clock()
+
+pygame.init()
+pygame.display.set_caption('Proyecto 3')
+screen = pygame.display.set_mode((1000,500),0,32)
+
+font = pygame.font.SysFont("Arial", 30)
 
 r = Raycaster(screen)
 
 #r.setColor( (128,0,0) )
 r.load_map('mapa.txt')
 
-isRunning = True
+def updateFPS():
+    fps = str(int(clock.get_fps()))
+    fps = font.render(fps, 1, pygame.Color("white"))
+    return fps
 
-while isRunning:
+def main_menu():
+    while True:
+
+        screen.fill(pygame.Color("dimgray")) #color de fondo
+        textobj = font.render('WOLFDOOM', 1, (255, 255, 255))  #titulo del juego
+        textrect = textobj.get_rect() 
+        textrect.topleft = (425, 50) #posicion x,y del juego
+        screen.blit(textobj, textrect) 
+
+        mx, my = pygame.mouse.get_pos()
+
+        button_1 = pygame.Rect(250, 150, 200, 50) 
+        button_2 = pygame.Rect(550, 150, 200, 50)
+        if button_1.collidepoint((mx, my)):
+          if click:
+            gotogame()
+        if button_2.collidepoint((mx, my)):
+          if click:
+            exit()
+
+        pygame.draw.rect(screen, (255, 0, 0), button_1)
+        pygame.draw.rect(screen, (255, 0, 0), button_2)
+
+        textobj = font.render('Iniciar', 1, (255, 255, 255))  #titulo del juego
+        textrect = textobj.get_rect() 
+        textrect.topleft = (285, 155) #posicion x,y del juego
+        screen.blit(textobj, textrect)
+
+        textobj = font.render('Salir', 1, (255, 255, 255))  #titulo del juego
+        textrect = textobj.get_rect() 
+        textrect.topleft = (635, 155) #posicion x,y del juego
+        screen.blit(textobj, textrect) 
+
+        click = False
+        for event in pygame.event.get():
+          if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+          if event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
+              pygame.quit()
+              sys.exit()
+          if event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+              click = True
+
+        pygame.display.update()
+        mainClock.tick(60)
+
+def gotogame():
+        screen.fill(pygame.Color("dimgray"))
+        game()
+
+        # pygame.display.update()
+        # mainClock.tick(60)
+
+def exit():
+  pygame.quit()
+
+
+def game():
+  c = 0
+  isRunning = True
+
+  while isRunning:
+
+    screen.fill((113, 113, 113))
+    r.render()
 
     for ev in pygame.event.get():
         if ev.type == pygame.QUIT:
@@ -82,6 +152,12 @@ while isRunning:
             elif ev.key == pygame.K_e:
                     r.player['angle'] += 5
 
+            elif ev.key == QUIT:
+                pygame.quit()
+                sys.exit()
+            elif ev.key == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
 
             i = int(newX / r.blocksize)
             j = int(newY / r.blocksize)
@@ -90,21 +166,10 @@ while isRunning:
                 r.player['x'] = newX
                 r.player['y'] = newY
 
-    screen.fill(pygame.Color("gray")) #Fondo
-
-    #Techo
-    screen.fill(pygame.Color("dimgray"), (int(r.width / 2), 0, int(r.width / 2),int(r.height / 2)))
-    
-    #Piso
-    screen.fill(pygame.Color("dimgray"), (int(r.width / 2), int(r.height / 2), int(r.width / 2),int(r.height / 2)))
-
-    r.render()
-    
-    # FPS
     screen.fill(pygame.Color("black"), (0,0,30,30))
     screen.blit(updateFPS(), (0,0))
-    clock.tick(30)  
-    
-    pygame.display.update()
+    clock.tick(30) 
 
-pygame.quit()
+    pygame.display.flip()
+
+main_menu()        
